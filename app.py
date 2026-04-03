@@ -13,20 +13,29 @@ import matplotlib.font_manager as fm
 
 # 1. 기본 설정 및 테마
 st.set_page_config(page_title="서울 카페 리스크 인텔리전스", layout="wide", initial_sidebar_state="expanded")
-
+# 폰트 경로 설정
 font_path = os.path.join(os.getcwd(), 'fonts', 'NanumGothic.ttf')
 
-# 폰트가 실제로 존재하는지 확인 후 설정
 if os.path.exists(font_path):
-    font_prop = fm.FontProperties(fname=font_path)
-    # 전체 기본 폰트 설정
-    plt.rc('font', family=font_prop.get_name())
-    # 혹은 개별 그래프 타이틀/라벨에 적용할 때:
-    # plt.title("강서구 리스크", fontproperties=font_prop)
+    # 1. 폰트 매니저에 등록
+    fm.fontManager.addfont(font_path)
+    prop = fm.FontProperties(fname=font_path)
+    
+    # 2. 전역 폰트 설정 (이게 중요합니다!)
+    plt.rc('font', family=prop.get_name())
+    
+    # 3. 리눅스 환경에서 유니코드 마이너스 깨짐 방지
+    plt.rcParams['axes.unicode_minus'] = False
+    print(f"✅ 폰트 로드 성공: {prop.get_name()}")
 else:
-    # 폰트 파일이 없을 경우 대비 (에러 방지)
-    plt.rcParams['font.family'] = 'sans-serif'
-
+    # 폰트가 없을 때 (로컬 테스트용)
+    if platform.system() == 'Darwin':
+        plt.rcParams['font.family'] = 'AppleGothic'
+    elif platform.system() == 'Windows':
+        plt.rcParams['font.family'] = 'Malgun Gothic'
+    else:
+        plt.rcParams['font.family'] = 'sans-serif'
+    print("⚠️ 폰트 파일이 없어 시스템 기본 폰트를 사용합니다.")
 plt.rcParams['axes.unicode_minus'] = False
 
 # 커스텀 CSS (글자색 강제 지정 및 카드 디자인)
