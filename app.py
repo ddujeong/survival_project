@@ -7,17 +7,24 @@ import platform
 import folium
 from streamlit_folium import st_folium
 import numpy as np
+import os
+import matplotlib.font_manager as fm
+
 
 # 1. 기본 설정 및 테마
 st.set_page_config(page_title="서울 카페 리스크 인텔리전스", layout="wide", initial_sidebar_state="expanded")
 
-# 폰트 설정 (Windows, Mac, Linux/Streamlit Cloud 공용)
-if platform.system() == 'Windows':
-    plt.rcParams['font.family'] = 'Malgun Gothic'
-elif platform.system() == 'Darwin': # Mac
-    plt.rcParams['font.family'] = 'AppleGothic'
+font_path = os.path.join(os.getcwd(), 'fonts', 'NanumGothic.ttf')
+
+# 폰트가 실제로 존재하는지 확인 후 설정
+if os.path.exists(font_path):
+    font_prop = fm.FontProperties(fname=font_path)
+    # 전체 기본 폰트 설정
+    plt.rc('font', family=font_prop.get_name())
+    # 혹은 개별 그래프 타이틀/라벨에 적용할 때:
+    # plt.title("강서구 리스크", fontproperties=font_prop)
 else:
-    # 스트림릿 클라우드(리눅스) 환경
+    # 폰트 파일이 없을 경우 대비 (에러 방지)
     plt.rcParams['font.family'] = 'sans-serif'
 
 plt.rcParams['axes.unicode_minus'] = False
